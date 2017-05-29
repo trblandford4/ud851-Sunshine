@@ -112,6 +112,13 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         new FetchWeatherTask().execute(location);
     }
 
+    private void openMap(Uri location) {
+        Intent openMapIntent = new Intent(Intent.ACTION_VIEW, location);
+        if(openMapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(openMapIntent);
+        }
+    }
+
     /**
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
      * clicks.
@@ -221,7 +228,13 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
             return true;
         }
 
-        // TODO (2) Launch the map when the map menu item is clicked
+        if (id == R.id.action_map) {
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme("geo").appendQueryParameter("q", SunshinePreferences.DEFAULT_MAP_LOCATION);
+            Uri location = builder.build();
+            openMap(location);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
